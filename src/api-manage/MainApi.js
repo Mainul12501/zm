@@ -1,7 +1,20 @@
 import axios from "axios";
+
+// custom code for multiple country start
+import { useCountry } from "contexts/CountryContext";
+const getBaseUrl = () => {
+  if (typeof window !== "undefined") {
+    const country = localStorage.getItem("selectedCountry") || "zm";
+    return `https://dash.mixmrt.com/${country}`;
+  }
+  return process.env.NEXT_PUBLIC_BASE_URL; // Default fallback
+};
+// custom code for multiple country end
+console.log("base-url--------", getBaseUrl());
 export const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const MainApi = axios.create({
-  baseURL: baseUrl,
+  baseURL: getBaseUrl(),
+  // baseURL: baseUrl,
 });
 MainApi.interceptors.request.use(function (config) {
   let zoneid = undefined;
@@ -27,7 +40,7 @@ MainApi.interceptors.request.use(function (config) {
   if (language) config.headers["X-localization"] = language;
   if (hostname) config.headers["origin"] = hostname;
   config.headers["X-software-id"] = software_id;
-  config.headers["Accept"] = 'application/json'
+  config.headers["Accept"] = "application/json";
   return config;
 });
 // MainApi.interceptors.response.use(

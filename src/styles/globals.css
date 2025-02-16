@@ -360,3 +360,64 @@ video {
 [dir='rtl'] .testimonials-slider .slick-slide {
     float: left;
 }
+
+
+/*country modal css*/
+/* Modal Background Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Dark background */
+    backdrop-filter: blur(5px); /* Blurred effect */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* Modal Box */
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
+}
+
+/* Modal Heading */
+.modal-content h3 {
+    margin-bottom: 15px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Custom Select Styling */
+.modal-content select {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none;
+    cursor: pointer;
+}
+
+/* Hover and Focus Effect */
+.modal-content select:hover,
+.modal-content select:focus {
+    border-color: #007bff;
+}
+
+/* Enhance for Select2 */
+.select2-container--default .select2-selection--single {
+    height: 45px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+}
+

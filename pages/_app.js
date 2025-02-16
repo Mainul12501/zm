@@ -19,7 +19,7 @@ import nProgress from "nprogress";
 import Router from "next/router";
 import { persistStore } from "redux-persist";
 import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useScrollRestoration from "api-manage/hooks/custom-hooks/useSCrollRestoration";
 
 Router.events.on("routeChangeStart", nProgress.start);
@@ -27,6 +27,42 @@ Router.events.on("routeChangeError", nProgress.done);
 Router.events.on("routeChangeComplete", nProgress.done);
 export const currentVersion = process.env.NEXT_PUBLIC_SITE_VERSION;
 const clientSideEmotionCache = createEmotionCache();
+
+// custom country select start
+// import { CountryProvider } from "../src/contexts/CountryContext";
+import { useCountry, CountryProvider } from "../src/contexts/CountryContext";
+
+const CountrySelectorModal = () => {
+  const { selectedCountry, changeCountry } = useCountry();
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    const storedCountry = localStorage.getItem("selectedCountry");
+    if (!storedCountry) {
+      setShowModal(true);
+    }
+  }, []);
+
+  const handleSelectCountry = (event) => {
+    changeCountry(event.target.value);
+    setShowModal(false);
+  };
+
+  return showModal ? (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <h3>Select Your Country</h3>
+        <select onChange={handleSelectCountry} defaultValue={selectedCountry}>
+          <option value="zm">Select a Country</option>
+          <option value="zm">Zambia</option>
+          <option value="tz">Tanzania</option>
+          <option value="mw">Malawi</option>
+        </select>
+      </div>
+    </div>
+  ) : null;
+};
+// custom country select end
 
 function MyApp(props) {
   const {
@@ -59,38 +95,42 @@ function MyApp(props) {
   useScrollRestoration();
   return (
     <>
-      <CacheProvider value={emotionCache}>
-        <QueryClientProvider client={queryClient}>
-          <ReduxProvider store={store}>
-            {/*<PersistGate loading={null} persistor={persistor}>*/}
-            <SettingsProvider>
-              <SettingsConsumer>
-                {(value) => (
-                  <ThemeProvider
-                    theme={createTheme({
-                      direction: value?.settings?.direction,
-                      responsiveFontSizes: value?.settings?.responsiveFontSizes,
-                      mode: value?.settings?.theme,
-                    })}
-                  >
-                    <RTL direction={value?.settings?.direction}>
-                      <CssBaseline />
-                      <Toaster position="top-center" />
-                      {/* <DynamicFavicon configData={configData}/> */}
-                      {/* <Head>
+      <CountryProvider>
+        <CountrySelectorModal />
+        <CacheProvider value={emotionCache}>
+          <QueryClientProvider client={queryClient}>
+            <ReduxProvider store={store}>
+              {/*<PersistGate loading={null} persistor={persistor}>*/}
+              <SettingsProvider>
+                <SettingsConsumer>
+                  {(value) => (
+                    <ThemeProvider
+                      theme={createTheme({
+                        direction: value?.settings?.direction,
+                        responsiveFontSizes:
+                          value?.settings?.responsiveFontSizes,
+                        mode: value?.settings?.theme,
+                      })}
+                    >
+                      <RTL direction={value?.settings?.direction}>
+                        <CssBaseline />
+                        <Toaster position="top-center" />
+                        {/* <DynamicFavicon configData={configData}/> */}
+                        {/* <Head>
                                                 <title>{t('Loading...')}</title>
                                             </Head> */}
-                      {getLayout(<Component {...pageProps} />)}
-                    </RTL>
-                  </ThemeProvider>
-                )}
-              </SettingsConsumer>
-            </SettingsProvider>
-            {/*</PersistGate>*/}
-          </ReduxProvider>
-          <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
-        </QueryClientProvider>
-      </CacheProvider>
+                        {getLayout(<Component {...pageProps} />)}
+                      </RTL>
+                    </ThemeProvider>
+                  )}
+                </SettingsConsumer>
+              </SettingsProvider>
+              {/*</PersistGate>*/}
+            </ReduxProvider>
+            <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+          </QueryClientProvider>
+        </CacheProvider>
+      </CountryProvider>
     </>
   );
 }
